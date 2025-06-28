@@ -44,5 +44,33 @@ ggplot(Datos_validos,aes(x=Almacenamiento,
   ylab("Días hasta cambio de textura") +
   theme_minimal() +
   ggtitle("Interacción: Pan:Almacenamiento")
-Se puede concluir que se rechaza la Hipotesis ya que sí hay interacción
+#Se puede concluir que se rechaza la Hipotesis ya que sí hay interacción
+
+#Normalidad
+# Extraer residuos
+residuos <- residuals(modelo)
+
+# Agregar los residuos al data frame
+Datos_validos$residuos <- residuos
+
+shapiro.test(residuos)
+
+#Gráfico de normalidad
+qqnorm(residuos)
+qqline(residuos, col = "blue", lwd = 2)
+
+#se concluye que sí hay normalidad 
+
+#Homocedasticidad
+library(car)
+leveneTest(Dias_Cambio~Pan*Almacenamiento, data=Datos_validos)
+
+# Gráfico de residuos vs valores ajustados
+plot(fitted.values(modelo), residuals(modelo),
+     xlab = "Valores ajustados (fitted values)",
+     ylab = "Residuos",
+     main = "Gráfico de Residuos vs Valores Ajustados",
+     pch = 19, col = "blue")
+abline(h = 0, col = "red", lwd = 2)
+#Se concluye que sí hay homocedasticidad
 
