@@ -74,3 +74,67 @@ plot(fitted.values(modelo), residuals(modelo),
 abline(h = 0, col = "red", lwd = 2)
 #Se concluye que sí hay homocedasticidad
 
+#Intervalo
+library(emmeans)
+emmeans(modelo, pairwise~Pan|Almacenamiento, adjust = "bonferroni")
+
+#POTENCIA
+# CMRes
+mod1 <- lm(Dias_Cambio ~ Pan * Almacenamiento + Bloque, data = Datos_validos)
+(cmres <- anova(mod1)[4, 3])
+s <- sqrt(cmres)
+n <- 4 * 6
+# FACTOR X
+X <- factor(rep(1:4, each = 6))
+# PROMEDIOS
+mu <- tapply(Datos_validos$Dias_Cambio, interaction(Datos_validos$Pan, Datos_validos$Almacenamiento), mean)
+muj <- rep(mu, each = 6) 
+# Y1
+Y1<-rnorm(n,muj,s)
+# BLOQUES
+B <- factor(rep(1:6, 4))
+# EFECTOS DE BLOQUES
+vb <- max(anova(mod1)["Bloque", "Mean Sq"] - cmres, 0)
+sb <- sqrt(vb)
+eb <- rnorm(6, 0, sb)
+efb <- rep(eb, 4)
+
+# VARIABLE FINAL Y
+Y <- Y1 + efb
+
+#Funcion de la potencia 
+fun <- function(b, mu, v, vb) {
+  k <- length(mu)
+  n <- b * k
+  X <- factor(rep(1:k, each = b))
+  muj <- rep(mu, each = b)
+  s <- sqrt(v)
+  Y1 <- rnorm(n, muj, s)
+  B <- factor(rep(1:b, k))
+  sb <- sqrt(vb)
+  eb <- rnorm(b, 0, sb)
+  efb <- rep(eb, k)
+  Y <- Y1 + efb
+  mod <- aov(Y ~ X + B)
+  p <- anova(mod)[1, 5]
+  return(p)
+}
+
+# Rango de bloques (réplicas)
+b <- 3:20
+h <- length(b)
+M <- 1000
+prob <- matrix(nrow = M, ncol = h)
+
+for (j in 1:h) {
+  for (i in 1:M) {
+    prob[i, j] <- fun(b[j], mu, cmres, vb)
+  }
+}
+
+# Potencia
+pot <- apply(prob < 0.05, 2, mean)
+
+# Gráfico
+plot(b, pot, type = "l", xlab = "Bloques (réplicas)", ylab = "Potencia",
+     main = "Curva de Potencia basada en experimento del pan ")
