@@ -33,8 +33,17 @@ Datos_validos <- na.omit(Datos)
 modelo <- aov(Dias_Cambio~Pan*Almacenamiento+Bloque, data = Datos_validos)
 summary(modelo)
 
+#Grafico de interacción 
+library(ggplot2)
 
-
+ggplot(Datos_validos,aes(x=Almacenamiento,
+                         y=Dias_Cambio, color=Pan, 
+                         group=Pan))+
+    stat_summary(fun=mean, geom="point", size=3) +
+  stat_summary(fun=mean, geom="line") +
+  ylab("Días hasta cambio de textura") +
+  theme_minimal() +
+  ggtitle("Interacción: Pan:Almacenamiento")
 
 
 
