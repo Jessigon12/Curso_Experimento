@@ -29,4 +29,12 @@ Datos$Almacenamiento <- factor(Datos$Almacenamiento)
 #Quitar los valores NA
 Datos_validos <- na.omit(Datos)
 
+#Modelo lineal
+modelo <- aov(Dias_Cambio~Pan*Almacenamiento+Bloque, data = Datos_validos)
+summary(modelo)
+
+
+
+
+
 
