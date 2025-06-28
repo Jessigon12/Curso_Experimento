@@ -44,6 +44,5 @@ ggplot(Datos_validos,aes(x=Almacenamiento,
   ylab("Días hasta cambio de textura") +
   theme_minimal() +
   ggtitle("Interacción: Pan:Almacenamiento")
-
-
+Se puede concluir que se rechaza la Hipotesis ya que sí hay interacción
 
