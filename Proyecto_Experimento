@@ -18,3 +18,15 @@ Datos <- data.frame(
                    21,24,NA,NA,
                    21,24,NA,NA)
 )
+
+#separar los factores
+library(tidyr)
+
+Datos <- separate(Datos, col = "Tratamientos", into = c("Pan", "Almacenamiento"), sep = "-")
+Datos$Pan <- factor(Datos$Pan)
+Datos$Almacenamiento <- factor(Datos$Almacenamiento)
+
+#Quitar los valores NA
+Datos_validos <- na.omit(Datos)
+
+
