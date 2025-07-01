@@ -1,5 +1,6 @@
 install.packages("tidyr")
 install.packages("ggplot2")
+install.packages("car")
 
 #Datos experimento
 Datos <- data.frame(
@@ -56,8 +57,9 @@ Datos_validos$residuos <- residuos
 shapiro.test(residuos)
 
 #Gráfico de normalidad
+library(car)
 qqnorm(residuos)
-qqline(residuos, col = "blue", lwd = 2)
+qqPlot(residuos)
 
 #se concluye que sí hay normalidad 
 
